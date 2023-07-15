@@ -9,10 +9,10 @@ module.exports = {
   plugins: [{
     resolve: 'gatsby-source-sanity',
     options: {
-      "projectId": "bog-witch-things",
-      "dataset": ""
+      "projectId": "soaxddri",
+      "dataset": "production",
     }
-  }, "gatsby-plugin-image", "gatsby-plugin-sharp", "gatsby-transformer-sharp", "gatsby-plugin-google-gtag", "gatsby-plugin-sitemap", {
+  }, "gatsby-plugin-image", "gatsby-plugin-sharp", "gatsby-transformer-sharp", "gatsby-plugin-sitemap", {
     resolve: 'gatsby-plugin-manifest',
     options: {
       "icon": "src/images/icon.png"
