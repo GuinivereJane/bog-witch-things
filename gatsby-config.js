@@ -10,7 +10,7 @@ console.log(process.env)
 module.exports = {
   siteMetadata: {
     title: `bog-witch-things`,
-    siteUrl: `https://www.yourdomain.tld`
+    description: `bog witch things`,
   },
   plugins: [{
     resolve: 'gatsby-source-sanity',
