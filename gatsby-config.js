@@ -1,6 +1,12 @@
 /**
  * @type {import('gatsby').GatsbyConfig}
  */
+
+require('dotenv').config({
+  path: `.env.${process.env.NODE_ENV}`,
+})
+
+console.log(process.env)
 module.exports = {
   siteMetadata: {
     title: `bog-witch-things`,
@@ -9,8 +15,9 @@ module.exports = {
   plugins: [{
     resolve: 'gatsby-source-sanity',
     options: {
-      "projectId": "soaxddri",
-      "dataset": "production",
+      "projectId": process.env.SANITY_PROJECT_ID,
+      "dataset": process.env.SANITY_DATASET,
+      "token": process.env.SANITY_TOKEN,
     }
   }, "gatsby-plugin-image", "gatsby-plugin-sharp", "gatsby-transformer-sharp", "gatsby-plugin-sitemap", {
     resolve: 'gatsby-plugin-manifest',
