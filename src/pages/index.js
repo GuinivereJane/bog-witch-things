@@ -1,13 +1,13 @@
 import React from "react"
 import { graphql } from "gatsby"
+import Layout from '../components/Layout'
 
 const HomePage = ({ data }) => {
-  console.log(data)
   return (
-    <div>
+    <Layout>
       Hello!
       {data.site.siteMetadata.description}
-    </div>
+    </Layout>
   )
 }
 

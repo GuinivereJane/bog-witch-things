@@ -1,48 +1,166 @@
-import * as React from 'react'
-import { Link, useStaticQuery, graphql } from 'gatsby'
-// import {
-//   container,
-//   heading,
-//   navLinks,
-//   navLinkItem,
-//   navLinkText
-// } from './layout.module.css'
+import React, { useState } from 'react'
 
-const Layout = ({ pageTitle, children }) => {
-  const data = useStaticQuery(graphql`
-    query {
-      site {
-        siteMetadata {
-          title
-        }
+import { useStaticQuery, graphql } from 'gatsby'
+import { Global } from '@emotion/react';
+import { 
+  createAppTheme, 
+  createAppStylesBaseline,
+  AnimatorGeneralProvider, 
+  Animator, 
+  BleepsProvider, 
+  GridLines, 
+  Dots, 
+  MovingLines,
+  useBleeps,
+  BleepsOnAnimator,
+  Animated,
+  FrameSVGCorners,
+  Text,
+  aa,
+  aaVisibility
+} from '@arwes/react';
+
+  const bleepsSettings = {
+    // Shared global audio settings.
+    master: {
+      volume: 0.9
+    },
+    bleeps: {
+      // A transition bleep sound to play when the user enters the app.
+      intro: {
+        sources: [
+          { src: 'https://next.arwes.dev/assets/sounds/intro.mp3', type: 'audio/mpeg' }
+        ]
+      },
+      // An interactive bleep sound to play when user clicks.
+      click: {
+        sources: [
+          { src: 'https://next.arwes.dev/assets/sounds/click.mp3', type: 'audio/mpeg' }
+        ]
       }
     }
+  };
+
+  
+  const animatorsSettings = {
+    // Durations in seconds.
+    duration: {
+      enter: 0.2,
+      exit: 0.2,
+      stagger: 0.04
+    }
+  };
+const theme = createAppTheme();
+const stylesBaseline = createAppStylesBaseline(theme);
+
+const Background = ({ children }) => {
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundColor: theme.colors.primary.bg(1)
+      }}
+    >
+      <GridLines lineColor={theme.colors.primary.deco(0)} />
+      <Dots color={theme.colors.primary.deco(1)} />
+      <MovingLines lineColor={theme.colors.primary.deco(2)} />
+      < Card />
+      { children }
+    </div>
+  );
+};
+
+
+const Layout = ({ pageTitle, children }) => {
+  const [active] = useState(true);
+  const data = useStaticQuery(graphql`
+  query {
+    site {
+      siteMetadata {
+        title
+      }
+    }
+  }
   `)
+  console.log('data', data)
 
   return (
-    <div>
-      <header>{data.site.siteMetadata.title}</header>
-      <nav>
-        <ul >
-          <li >
-            <Link to="/" >
-              Home
-            </Link>
-          </li>
-          <li >
-            <Link to="/about" >
-              About
-            </Link>
-          </li>
-          
-        </ul>
-      </nav>
-      <main>
-        <h1>{pageTitle}</h1>
-        {children}
-      </main>
-    </div>
+    <>
+      <Global styles={stylesBaseline} />
+
+      <AnimatorGeneralProvider {...animatorsSettings}>
+      <BleepsProvider {...bleepsSettings}>
+
+      <Animator combine manager='stagger' active={active}>
+      <Background>
+        <div>
+        </div>
+        { children }
+        </Background>
+   
+      </Animator>
+      </BleepsProvider>
+      </AnimatorGeneralProvider>
+
+    </>
   )
 }
 
 export default Layout
+
+const Card = () => {
+  const bleeps = useBleeps();
+
+  return (
+    <Animator merge combine manager='stagger'>
+      {/* Play the intro bleep when card appears. */}
+      <BleepsOnAnimator
+        transitions={{ entering: 'intro' }}
+        continuous
+      />
+
+      <Animated
+        className='card'
+        style={{
+          position: 'relative',
+          display: 'block',
+          maxWidth: '300px',
+          margin: theme.space([4, 'auto']),
+          padding: theme.space(8),
+          textAlign: 'center'
+        }}
+        // Effects for entering and exiting animation transitions.
+        animated={[aaVisibility(), aa('y', '2rem', 0)]}
+        // Play bleep when the card is clicked.
+        onClick={() => bleeps.click?.play()}
+      >
+        {/* Frame decoration and shape colors defined by CSS. */}
+        <style>{`
+          .card .arwes-react-frames-framesvg [data-name=bg] {
+            color: ${theme.colors.primary.deco(1)};
+          }
+          .card .arwes-react-frames-framesvg [data-name=line] {
+            color: ${theme.colors.primary.main(4)};
+          }
+        `}</style>
+
+        <Animator>
+          <FrameSVGCorners strokeWidth={2} />
+        </Animator>
+
+        <Animator>
+          <Text as='h1'>
+            Arwes Project
+          </Text>
+        </Animator>
+
+        <Animator>
+          <Text>
+            Futuristic science fiction user interface web framework.
+          </Text>
+        </Animator>
+      </Animated>
+    </Animator>
+  );
+};
