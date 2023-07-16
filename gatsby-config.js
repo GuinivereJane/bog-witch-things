@@ -11,12 +11,13 @@ module.exports = {
   siteMetadata: {
     title: `bog-witch-things`,
     description: `bog witch things`,
+    siteUrl: `https://bogwitchthingsmain.gatsbyjs.io/`,
   },
   plugins: [{
     resolve: 'gatsby-source-sanity',
     options: {
       "projectId": process.env.SANITY_PROJECT_ID,
-      "dataset": process.env.SANITY_DATASET || "production",
+      "dataset": process.env.SANITY_DATASET || production,
       "token": process.env.SANITY_TOKEN,
     }
   }, "gatsby-plugin-image", "gatsby-plugin-sharp", "gatsby-transformer-sharp", "gatsby-plugin-sitemap", {
